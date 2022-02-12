@@ -1,17 +1,18 @@
 import streamlit as st
-import requests
-from web3 import Web3
-import json
 import pandas as pd
 import hvplot
 import hvplot.pandas
 import holoviews as hv
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, mean_squared_error
 
 #IMPORT DATA
 data = pd.read_csv("throwdowns_transactions.csv", index_col='Player Name')
 
-############
-##### SIDEBAR
+#####################################################################
+############################## SIDEBAR ##############################
+#####################################################################
 
 # SET SELECTION
 # UPDATE "sets" WHEN NEW CSV IS UPLOADED, S2 IS JUST A TESTER
@@ -24,18 +25,23 @@ player_choice = st.sidebar.selectbox('Choose Player', players)
 
 
 
-###################################
-##BODY##
+#####################################################################
+############################## BODY #################################
+#####################################################################
+
+# SET IMAGE
 st.image('https://otmnft.com/static/transaction_data/img/sets/co_2_throwdowns_rare.jpg', width=100)
 
-
-#player_data = pd.DataFrame(data.loc[data['Player Name']==player_choice])
+# SELECTED PLAYER DF
 player_data = pd.DataFrame(data.loc[data.index==player_choice])
+
+# SELECTED PLAYER SERIAL / PRICE PLOT
 player_plot = player_data.hvplot.scatter(x='Serial',
                                          y='Purchase Price',
                                          width=500,
                                          height=200,
-                                         xticks=25
+                                         xticks=25,
+                                         rot=90
 )
 st.bokeh_chart(hv.render(player_plot, backend='bokeh'))
 
@@ -57,3 +63,10 @@ st.write(player_data)
 
 # Add video for each player
 st.video('https://assets.nbatopshot.com/editions/2_throwdowns_rare/f3140cd1-8f9e-4483-853d-9bce3d63180d/play_f3140cd1-8f9e-4483-853d-9bce3d63180d_2_throwdowns_rare_capture_Animated_1080_1920_Black.mp4')
+
+
+#####################################################################
+############################## RF MODEL##############################
+#####################################################################
+
+st.write("Moment Fair Value:")
