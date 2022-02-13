@@ -3,9 +3,9 @@ import pandas as pd
 import hvplot
 import hvplot.pandas
 import holoviews as hv
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, mean_squared_error
+# from sklearn.ensemble import RandomForestRegressor
+# from sklearn.model_selection import train_test_split
+# from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, mean_squared_error
 from datetime import datetime
 
 
@@ -28,7 +28,7 @@ players = data.index.drop_duplicates(keep='first').sort_values(ascending=True)
 player_choice = st.sidebar.selectbox('Choose Player', players)
 circulation_count = data.loc[data.index==player_choice,'Circulation Count'].iloc[0]
 
-
+# ADD PLAYER JPGs to DF, REFERENCE DF IN IF STATEMENT
 if player_choice == 'Blake Griffin':
     st.sidebar.image('https://otmnft.com/static/transaction_data/img/moments/GettyImages-1232169410.jpeg', caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
 
@@ -49,27 +49,28 @@ st.write('\n')
 # SELECTED PLAYER DF
 player_data = pd.DataFrame(data.loc[data.index==player_choice])
 
+
 #CONVERT TRANSACTION DATE TO DATETIME
-player_data['Transaction Date'] = pd.to_datetime(player_data['Transaction Date'])
+player_data['Date'] = pd.to_datetime(player_data['Transaction Date'])
+player_data.sort_values(by='Date', ascending=False)
 
 
 
 
 # LAST TRANSACTION STATS
-# LOOK INTO THIS...LAST PURCHASE IS NOT PULLING IN CORRECTLY
 
-last_price = data.loc[data.index==player_choice,'Purchase Price'].iloc[0]
-second_price = data.loc[data.index==player_choice, 'Purchase Price'].iloc[1]
+last_price = data.loc[data.index==player_choice,'Purchase Price'].iloc[-1]
+second_price = data.loc[data.index==player_choice, 'Purchase Price'].iloc[-2]
 pct_chg = round((last_price - second_price)/second_price*100,2)
 
-last_buyer = data.loc[data.index==player_choice,'Buyer'].iloc[0]
-last_seller = data.loc[data.index==player_choice,'Seller'].iloc[0]
-last_tx_date = data.loc[data.index==player_choice,'Transaction Date'].iloc[0]
-last_serial = data.loc[data.index==player_choice,'Serial'].iloc[0]
+last_buyer = data.loc[data.index==player_choice,'Buyer'].iloc[-1]
+last_seller = data.loc[data.index==player_choice,'Seller'].iloc[-1]
+last_tx_date = data.loc[data.index==player_choice,'Transaction Date'].iloc[-1]
+last_serial = data.loc[data.index==player_choice,'Serial'].iloc[-1]
 
 #FAIR VALUE CALCS
-last_fair_value = fair_value_df.loc[fair_value_df.index==player_choice,'Fair Value'].iloc[0].astype(int)
-second_fair_value = fair_value_df.loc[fair_value_df.index==player_choice,'Fair Value'].iloc[1].astype(int)
+last_fair_value = fair_value_df.loc[fair_value_df.index==player_choice,'Fair Value'].iloc[-1].astype(int)
+second_fair_value = fair_value_df.loc[fair_value_df.index==player_choice,'Fair Value'].iloc[-2].astype(int)
 fv_pct_chg = round((last_fair_value - second_fair_value)/second_fair_value*100,2)
 
 # WRITE TRANSACTION STATS
@@ -103,7 +104,7 @@ serial_price_plot = player_data.hvplot.scatter(x='Serial',
 )
 
 # PLAYER PRICE HISTORY
-player_price_history = player_data.hvplot.line(x='Transaction Date',
+player_price_history = player_data.hvplot.line(x='Date',
                                                y = 'Purchase Price',
                                                width=750,
                                                height=250,
