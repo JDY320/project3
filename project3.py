@@ -37,7 +37,7 @@ if player_choice == 'Blake Griffin':
 ############################## BODY #################################
 #####################################################################
 # TITLE
-st.title("NBA TopShot Evaluator")
+st.markdown("# :basketball: NBA TopShot Evaluator :basketball:")
 # SET IMAGE
 st.subheader(f"{set_choice}:  {player_choice}")
 st.write(f"Moment Count: {circulation_count}")
@@ -76,7 +76,7 @@ fv_pct_chg = round((last_fair_value - second_fair_value)/second_fair_value*100,2
 # WRITE TRANSACTION STATS
 st.subheader("Last Transaction Details:")
 
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 
 with col1:
     st.metric(label="Last Price", value=f"${last_price}", delta= f"{pct_chg}%")
@@ -88,6 +88,21 @@ with col1:
 
 with col2:
     st.metric(label="Estimated Fair Value", value=f"${last_fair_value}", delta= f"{fv_pct_chg}%")
+
+with col3:
+    link = data.loc[data.index==player_choice,'Top Shot Link'].iloc[0]
+
+    st.write("Recommendation")
+    if last_price < last_fair_value*.90:
+        if st.button("BUY"):
+            st.markdown(link,unsafe_allow_html=True)
+    elif last_price > last_fair_value*1.1:
+        if st.button("SELL"):
+            st.markdown(link,unsafe_allow_html=True)
+    else:
+        st.write("HOLD")
+
+    
 
 
 # SELECTED PLAYER SERIAL / PRICE PLOT
