@@ -3,9 +3,6 @@ import pandas as pd
 import hvplot
 import hvplot.pandas
 import holoviews as hv
-# from sklearn.ensemble import RandomForestRegressor
-# from sklearn.model_selection import train_test_split
-# from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, mean_squared_error
 from datetime import datetime
 
 
