@@ -103,7 +103,7 @@ with col3:
 
 
 # SELECTED PLAYER SERIAL / PRICE PLOT
-charts = ["Serial/Price", "Player Price History"]
+charts = ["Serial/Price", "Player Price History", "Player Correlation"]
 
 # CHARTING
 # SERIAL/PRICE
@@ -124,6 +124,15 @@ player_price_history = player_data.hvplot.line(x='Date',
                                                rot=45
 )
 
+# FEATURE CORRELATION
+
+correlation_df = player_data.filter(['Player Name', 'Serial', 'Purchase Price'], axis=1).corr()
+
+
+corr_plot = correlation_df.hvplot.bar(rot=90,
+                                      ylim = [-1,1]
+)
+
 
 chart_select = st.selectbox("Select Chart",charts)
 
@@ -133,6 +142,8 @@ if chart_select == "Serial/Price":
 if chart_select == "Player Price History":
     st.bokeh_chart(hv.render(player_price_history, backend='bokeh'))
 
+if chart_select =="Player Correlation":
+    st.bokeh_chart(hv.render(corr_plot, backend='bokeh'))
 
 
 
