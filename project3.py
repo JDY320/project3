@@ -88,14 +88,14 @@ with col2:
 
 with col3:
     link = data.loc[data.index==player_choice,'Top Shot Link'].iloc[0]
-
+    
     st.write("Recommendation")
     if last_price < last_fair_value*.90:
         if st.button("BUY"):
-            st.markdown(link,unsafe_allow_html=True)
+            st.markdown(f"Buy Moment here: [{player_choice}](%s)" % link)
     elif last_price > last_fair_value*1.1:
         if st.button("SELL"):
-            st.markdown(link,unsafe_allow_html=True)
+            st.markdown(f"Sell Moment here: [{player_choice}](%s)" % link)
     else:
         st.write("HOLD")
 
@@ -103,7 +103,7 @@ with col3:
 
 
 # SELECTED PLAYER SERIAL / PRICE PLOT
-charts = ["Serial/Price", "Player Price History", "Player Correlation"]
+charts = ["Serial/Price", "Player Price History", "Moment Correlation"]
 
 # CHARTING
 # SERIAL/PRICE
@@ -126,11 +126,11 @@ player_price_history = player_data.hvplot.line(x='Date',
 
 # FEATURE CORRELATION
 
-correlation_df = player_data.filter(['Player Name', 'Serial', 'Purchase Price'], axis=1).corr()
+correlation_df = data.filter(['Purchase Price', 'Serial', 'Circulation Count'], axis=1).corr()['Purchase Price'][:]
 
 
-corr_plot = correlation_df.hvplot.bar(rot=90,
-                                      ylim = [-1,1]
+corr_plot = correlation_df.hvplot.bar(rot=0,
+                                      ylim = [-0.5,1]
 )
 
 
@@ -142,7 +142,7 @@ if chart_select == "Serial/Price":
 if chart_select == "Player Price History":
     st.bokeh_chart(hv.render(player_price_history, backend='bokeh'))
 
-if chart_select =="Player Correlation":
+if chart_select =="Moment Correlation":
     st.bokeh_chart(hv.render(corr_plot, backend='bokeh'))
 
 
